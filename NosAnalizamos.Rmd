@@ -26,16 +26,29 @@ rm(list = ls())
 # Cargar datos
 
 ```{r}
-# Averiguar la codificación
+# # Averiguar la codificación
+# 
+# #readLines()
+# 
+# guess_encoding("data/NosAutoAnalizamos2022 - Hoja1.tsv")
+# datos <- read_delim("data/NosAutoAnalizamos2022 - Hoja1.tsv",
+#                  delim = "\t", escape_double = FALSE,
+#                  trim_ws = TRUE, skip = 25)
+# 
+# head(datos)
 
-#readLines()
+library(readr)
+datos <- read_delim("data/NosAutoanalizamos2026 - NosAutoanalizamos (1).tsv", 
+    delim = "\t", escape_double = FALSE, 
+    col_types = cols(...1 = col_skip(), ...2 = col_skip(), 
+        ...3 = col_skip(), ...22 = col_skip(), 
+        ...23 = col_skip()), trim_ws = TRUE, 
+    skip = 27)
+View(datos)
 
-guess_encoding("data/NosAutoAnalizamos2022 - Hoja1.tsv")
-df <- read_delim("data/NosAutoAnalizamos2022 - Hoja1.tsv",
-                 delim = "\t", escape_double = FALSE,
-                 trim_ws = TRUE, skip = 25)
+datos <- datos[1:nrow(datos)-1,] # Eliminamos la última fila que es defectuosa.
 
-head(df)
+datos <- datos %>% filter(Id != "martsobm")
 
 ```
 
