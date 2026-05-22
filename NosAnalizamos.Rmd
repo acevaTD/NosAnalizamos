@@ -77,3 +77,59 @@ datos$MD <- as.numeric(datos$MD)
 
 # Obtención de estadísticos.
 
+```{r}
+df_notas <- datos %>% select(ALG, ANM, FP, DCS, MD)
+
+tabla_estadisticos <- bind_rows(
+  # Calcular el mínimo y el máximo
+df_notas %>% summarize(across(everything(), min, na.rm = T)),
+df_notas %>% summarize(across(everything(), max, na.rm = T)),
+
+# Calcular los percentiles de x
+df_notas %>% 
+  summarize(across(everything(), \(x) quantile(x, probs = 0.25, na.rm = TRUE))),
+df_notas %>% 
+  summarize(across(everything(), \(x) quantile(x, probs = 0.75, na.rm = TRUE))),
+
+# Calcular la mediana
+df_notas %>% summarize(across(everything(), median, na.rm = T)),
+
+# Calcular la media
+df_notas %>% summarize(across(everything(), mean, na.rm = T)),
+
+# Calcular la desviación típica
+df_notas %>% summarize(across(everything(), sd, na.rm = T)),
+)
+row.names(tabla_estadisticos) = c("Min", "Max", "P25", "P75", "Median", "Mean", 
+                                  "sd")
+```
+
+# Relación entre las variables
+
+```{r}
+library(GGally)
+ggpairs(df_notas, na.rm = T)
+
+# Matrices con las correlaciones
+matriz_spearman <- as.data.frame(cor(df_notas, use = "complete.obs", 
+                                     method = "spearman"))
+matriz_pearson <- as.data.frame(cor(df_notas, use = "complete.obs", 
+                                    method = "pearson"))
+
+# Sustituimos 1 por 0 para que no salga como máximo
+matriz_spearman <- matriz_spearman %>% 
+  reframe(across(everything(), \(x) replace_values(x, 1 ~ 0)))
+matriz_pearson <- matriz_pearson %>% 
+  reframe(across(everything(), \(x) replace_values(x, 1 ~ 0)))
+
+row.names(matriz_spearman) <- colnames(matriz_spearman)
+row.names(matriz_pearson) <- colnames(matriz_pearson)
+
+# Hallamos el máximo y cogemos el primer valor
+(matriz_spearman %>% 
+    arrange(desc(across(everything()))) %>% slice_head(n = 1))[1]
+(matriz_pearson %>% 
+    arrange(desc(across(everything()))) %>% slice_head(n = 1))[1]
+```
+
+
