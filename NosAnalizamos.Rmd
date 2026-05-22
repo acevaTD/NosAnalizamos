@@ -130,6 +130,24 @@ row.names(matriz_pearson) <- colnames(matriz_pearson)
     arrange(desc(across(everything()))) %>% slice_head(n = 1))[1]
 (matriz_pearson %>% 
     arrange(desc(across(everything()))) %>% slice_head(n = 1))[1]
+
+# Boxplots
+ggplot(data = datos, aes(x = ALG, color = Sex)) + geom_boxplot()
+ggplot(data = datos, aes(x = ANM, color = Sex)) + geom_boxplot()
+ggplot(data = datos, aes(x = FP, color = Sex)) + geom_boxplot()
+ggplot(data = datos, aes(x = DCS, color = Sex)) + geom_boxplot()
+ggplot(data = datos, aes(x = MD, color = Sex)) + geom_boxplot()
 ```
 
+# Representación alumnos con calificaciones en todas las asignaturas
+
+```{r}
+notas_full <- datos %>% select(Id, ALG, ANM, FP, DCS, MD) %>% drop_na() %>%
+  pivot_longer(cols = -Id, names_to = "Asignatura", values_to = "Nota")
+notas_full$Asignatura <- as.factor(notas_full$Asignatura)
+notas_full$Id <- as.factor(notas_full$Id)
+
+ggplot(notas_full, aes(x = Id, y = Nota, color = Asignatura)) +
+  geom_line(aes(group = Asignatura), lwd = 0.5) + geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
 
