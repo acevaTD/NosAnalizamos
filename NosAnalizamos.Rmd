@@ -52,5 +52,28 @@ datos <- datos %>% filter(Id != "martsobm")
 
 ```
 
+# Adecuar los datos
 
+```{r}
+datos$ALG <- str_replace_all(datos$ALG, ",", ".")
+datos$ANM <- str_replace_all(datos$ANM, ",", ".")
+datos$FP <- str_replace_all(datos$FP, ",", ".")
+datos$DCS <- str_replace_all(datos$DCS, ",", ".")
+datos$MD <- str_replace_all(datos$MD, ",", ".")
+
+datos$ALG <- str_replace_all(datos$ALG, "NC", "3")
+datos$ANM <- str_replace_all(datos$ANM, "NC", "3")
+datos$FP <- str_replace_all(datos$FP, "NC", "3")
+datos$DCS <- str_replace_all(datos$DCS, "NC", "3")
+datos$MD <- str_replace_all(datos$MD, "NC", "3")
+
+datos$ALG <- as.numeric(datos$ALG)
+datos$ANM <- as.numeric(datos$ANM)
+datos$FP <- as.numeric(datos$FP)
+datos$DCS <- as.numeric(datos$DCS)
+datos$MD <- as.numeric(datos$MD)
+```
+
+
+# Obtención de estadísticos.
 
